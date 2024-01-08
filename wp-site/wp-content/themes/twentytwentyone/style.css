@@ -820,7 +820,7 @@ template {
     margin-bottom: 10px;
 }
 
-.switches-container input {
+.switches-container input[type=radio] {
     visibility: hidden;
     position: absolute;
     top: 0;
@@ -887,6 +887,7 @@ template {
 #search-form {
     display: flex;
     margin-bottom: 20px;
+    gap: 10px;
 }
 
 .search-form__item {
@@ -895,10 +896,41 @@ template {
     justify-content: end;
 }
 
+.search-form__item input[type=text] {
+    border: none;
+    border-radius: 20px;
+    padding: 5px 8px;
+    color: #333;
+    box-shadow: inset 0 2px 0 rgba(0,0,0,.2), 0 0 4px rgba(0,0,0,0.1);
+}
+
+.search-form__item input[type=text]:focus {
+    outline: none;
+    box-shadow: inset 0 2px 0 rgba(0, 0, 0, .2), 0 0 4px rgba(0, 0, 0, 0.1), 0 0 5px 1px #51cbee;
+}
+
+.search-form__item button {
+    border: none;
+    border-radius: 6px;
+    padding: 10px 20px;
+    color: #626262;
+    background-color: #e0e0e0;
+    box-shadow: 10px 10px 20px #bcbcbc, 10px 10px 20px #fff;
+    transition: .24s;
+}
+
+.search-form__item button:active,
+.search-form__item button:focus {
+    outline: none;
+    box-shadow: inset 3px 3px 5px #bcbcbc, inset -3px -3px 5px #fff;
+}
+
 .search-form__item:last-child {
     margin-left: auto;
 }
-
+body {
+    background: red;
+}
 .table-container {
     max-width: 1180px;
     padding: 0 20px;

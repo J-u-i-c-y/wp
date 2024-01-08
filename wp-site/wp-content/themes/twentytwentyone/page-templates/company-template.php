@@ -73,20 +73,20 @@ $total = get_field('total'); ?>
 <div class="container">
     <div class="company-info">
         <h1><?= get_the_title() ?></h1>
-        <p><?= $description ?></p>
+        <p><?= sanitize_text_field($description); ?></p>
     </div>
     <div class="delivery-options">
         <div class="delivery-option">
             <h3>Status</h3>
-            <p><?= $status ?></p>
+            <p><?= sanitize_text_field($status); ?></p>
         </div>
         <div class="delivery-option">
             <h3>Date</h3>
-            <p>From <?= $start_date ?> to <?= $end_date ?></p>
+            <p>From <?= sanitize_text_field($start_date); ?> to <?= sanitize_text_field($end_date); ?></p>
         </div>
         <div class="delivery-option">
             <h3>Price</h3>
-            <p><?= $total ?></p>
+            <p>$<?= sanitize_text_field($total); ?></p>
         </div>
     </div>
 </div>
