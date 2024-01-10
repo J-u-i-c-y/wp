@@ -2,11 +2,12 @@
     function tableSort() {
         var switchUsd = document.getElementById('switchUsd');
         var switchPln = document.getElementById('switchPln');
-        var pricesUsd = document.querySelectorAll('.price .usd');
-        var pricesPln = document.querySelectorAll('.price .pln');
     
         [switchUsd, switchPln].forEach(element => {
             element.addEventListener('click', () => {
+                var pricesUsd = document.querySelectorAll('.price .usd');
+                var pricesPln = document.querySelectorAll('.price .pln');
+    
                 pricesUsd.forEach(e => {
                     e.classList.toggle('d-none');
                 });

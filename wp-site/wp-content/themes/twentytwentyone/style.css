@@ -880,10 +880,6 @@ template {
     opacity: 1;
 }
 
-.d-none {
-    display: none;
-}
-
 #search-form {
     display: flex;
     margin-bottom: 20px;
@@ -928,9 +924,7 @@ template {
 .search-form__item:last-child {
     margin-left: auto;
 }
-body {
-    background: red;
-}
+
 .table-container {
     max-width: 1180px;
     padding: 0 20px;
@@ -1292,6 +1286,10 @@ button {
 .site-content:after,
 .site-footer:after {
     clear: both;
+}
+
+.d-none {
+    display: none;
 }
 
 /* Category 04 can contain any default HTML element. Do not add classes here, just give the elements some basic styles. */

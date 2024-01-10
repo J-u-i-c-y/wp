@@ -1,6 +1,8 @@
 jQuery(document).ready(function($) {
     var table = document.getElementById('custom-posts-table').getElementsByTagName('tbody')[0];
     var searchFormBtn = document.querySelector('#search-form button');
+    var pagination = document.querySelector('.pagination');
+    var searchInputs = document.querySelectorAll('.search-form__item input[type=text]');
     var page = 1;
     
     function loadMoreData() {
@@ -19,7 +21,6 @@ jQuery(document).ready(function($) {
                 page: page,
             },
             success: function(response) {
-                console.log(response);
                 if (response) {
                     table.innerHTML = response;
                     page++;
@@ -29,6 +30,18 @@ jQuery(document).ready(function($) {
     }
     
     searchFormBtn.addEventListener('click', function() {
+        var isEmpty = true;
+    
+        searchInputs.forEach(function(e) {
+            if (e.value !== '') {
+                isEmpty = false;
+            }
+        });
+        if (!isEmpty) {
+            pagination.classList.add('d-none');
+        } else {
+            pagination.classList.remove('d-none');
+        }
         page = 1;
         table.innerHTML = '';
         loadMoreData();
