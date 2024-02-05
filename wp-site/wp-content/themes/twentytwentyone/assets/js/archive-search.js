@@ -11,7 +11,7 @@ jQuery(document).ready(function($) {
         var endDate = document.getElementById('end-date').value;
         
         $.ajax({
-            url: 'http://localhost:8888/wp-site/wp-admin/admin-ajax.php',
+            url: myAjax.ajaxurl,
             type: 'POST',
             data: {
                 action: 'load_more_data',

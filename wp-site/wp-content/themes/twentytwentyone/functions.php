@@ -762,7 +762,7 @@ function load_more_data()
     }
 
     $query_args = [
-        'paged'      => $page,
+        'paged'      => $page['page'],
         'post_type'  => 'delivery-companies',
         's'          => $search,
         'meta_query' => $meta_query,
@@ -784,6 +784,31 @@ function load_more_data()
 
 add_action('wp_ajax_load_more_data', 'load_more_data');
 add_action('wp_ajax_nopriv_load_more_data', 'load_more_data');
+
+function update_pagination()
+{
+    $paged = get_query_var( 'paged' ) ? get_query_var( 'paged' ) : 1;
+
+    $query_args = [
+        'paged'          => $paged,
+        'post_type'      => 'delivery-companies',
+        'posts_per_page' => 5,
+    ];
+
+    $query = new WP_Query($query_args);
+
+    if ($query->have_posts()):
+        echo $query->max_num_pages;
+        wp_reset_postdata();
+    else :
+        echo '<tr><td>No more posts found</td></tr>';
+    endif;
+
+    wp_die();
+}
+
+add_action('wp_ajax_update_pagination', 'update_pagination');
+add_action('wp_ajax_nopriv_update_pagination', 'update_pagination');
 
 function add_table_row()
 {
@@ -809,3 +834,10 @@ function add_table_row()
 
     return $out;
 }
+
+function ajax_script() {
+    wp_enqueue_script( 'ajax_operation_script', get_template_directory_uri() . '/assets/js/jquery.js', array('jquery'), '1.0.0', true );
+    wp_localize_script( 'ajax_operation_script', 'myAjax', array( 'ajaxurl' => admin_url( 'admin-ajax.php', 'relataive' )));
+    wp_enqueue_script( 'ajax_operation_script' );
+}
+add_action( 'wp_enqueue_scripts', 'ajax_script' );

@@ -47,7 +47,12 @@
             );
         
             var rows = Array.from(table.querySelectorAll('tbody tr'))
-                .sort(comparer(columnIndex, order));
+                .sort((a, b) => {
+                    var aValue = a.cells[columnIndex].innerText.replace(/[^\d.-]/g, '');
+                    var bValue = b.cells[columnIndex].innerText.replace(/[^\d.-]/g, '');
+                    return Number(aValue) - Number(bValue);
+                });
+            
             if (order === 'desc') {
                 rows = rows.reverse();
             }
@@ -60,24 +65,6 @@
             rows.forEach(row => {
                 tbody.appendChild(row);
             });
-        }
-        
-        function comparer(index) {
-            return function(a, b) {
-                var valA = getCellValue(a, index);
-                var valB = getCellValue(b, index);
-                return isNumeric(valA) && isNumeric(valB) ?
-                    valA - valB :
-                    valA.toString().localeCompare(valB);
-            };
-        }
-        
-        function getCellValue(row, index) {
-            return row.children[index].textContent;
-        }
-        
-        function isNumeric(value) {
-            return !isNaN(parseFloat(value)) && isFinite(value);
         }
         
         function updateUrl(sortColumn, sortOrder) {
