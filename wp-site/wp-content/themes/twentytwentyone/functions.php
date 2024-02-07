@@ -766,6 +766,7 @@ function load_more_data()
         'post_type'  => 'delivery-companies',
         's'          => $search,
         'meta_query' => $meta_query,
+        'order'          => 'ASC',
     ];
 
     $query = new WP_Query($query_args);
@@ -793,6 +794,7 @@ function update_pagination()
         'paged'          => $paged,
         'post_type'      => 'delivery-companies',
         'posts_per_page' => 5,
+        'order'          => 'ASC',
     ];
 
     $query = new WP_Query($query_args);
@@ -821,9 +823,11 @@ function add_table_row()
     $link       = get_permalink();
 
     $out  = '<tr>';
-    $out .= '<td>#' . get_the_ID() . '</td>';
+
+    $out .= '<td><input type="checkbox" id="' . get_the_ID() . '" value="' . get_the_ID() . '">';
+    $out .= '<label for="' . get_the_ID() . '"></label>#' . get_the_ID() . '</td>';
     $out .= '<td><a href="' . $link . '">' . $title . '</a></td>';
-    $out .= '<td>' . $status . '</td>';
+    $out .= '<td><span class="' . $status . '">' . $status . '</span></td>';
     $out .= '<td>' . $start_date . '</td>';
     $out .= '<td>' . $end_date . '</td>';
     $out .= '<td class="price">';
@@ -841,3 +845,36 @@ function ajax_script() {
     wp_enqueue_script( 'ajax_operation_script' );
 }
 add_action( 'wp_enqueue_scripts', 'ajax_script' );
+
+function make_is_paid()
+{
+    $ids = $_POST['ids'];
+//    $id = $_POST['id'];
+
+    $connect = new PDO('mysql:host=localhost;dbname=wp_site', 'root', 'root', [PDO::ATTR_ERRMODE =>
+    PDO::ERRMODE_EXCEPTION]);
+    $sql  = 'UPDATE wp_postmeta SET meta_value = :paid WHERE post_id IN ('.implode(',',$ids).') AND meta_key = :status';
+//    $sql  = 'UPDATE wp_postmeta SET meta_value = :paid WHERE post_id IN (:id) AND meta_key = :status';
+    $stmt = $connect->prepare($sql);
+
+    try {
+        $stmt->execute([
+            'status' => 'status',
+            'paid'   => 'paid',
+//        'id' => $id,
+//            'ids'    => array_map('intval', $ids), // "15,16"
+//        'ids'   => $ids, // "15,16"
+        ]);
+    }catch (\Exception $e){
+        echo (string)$e;
+        die();
+    }
+    load_more_data();
+//    $stmt = $connect->query($sql);
+//    while($company = $stmt->fetch(PDO::FETCH_ASSOC)) {
+
+}
+
+add_action('wp_ajax_make_is_paid', 'make_is_paid');
+add_action('wp_ajax_nopriv_make_is_paid', 'make_is_paid');
+

@@ -1,6 +1,46 @@
 (function() {
     
     var paginationActiveClassSelector = '.page-numbers.current';
+    var isPaidButton = document.querySelector('.mark-paid-btn');
+    var companiesCheckbox = document.querySelectorAll('.table-wrapper input[type=checkbox]');
+    
+    
+    isPaidButton.addEventListener('click', function() {
+        // var currentCheckedItems = '';
+        var currentCheckedItems = [];
+        companiesCheckbox.forEach(function(input) {
+            // if(input.checked) {
+            //     if(currentCheckedItems === '') {
+            //         currentCheckedItems += input.value;
+            //     } else {
+            //         currentCheckedItems += ', ' + input.value;
+            //     }
+            // }
+            if(input.checked) {
+                currentCheckedItems.push(input.value);
+                // makeIsPaid(input.value);
+            }
+        })
+        makeIsPaid(currentCheckedItems);
+    })
+    
+    function makeIsPaid(ids) {
+        $.ajax({
+            type: 'POST',
+            url: myAjax.ajaxurl,
+            data: {
+                action: 'make_is_paid',
+                ids: ids,
+                // id: id,
+                page: getParams()
+            },
+        })
+            .done(function(data) {
+                if (data.length > 0) {
+                    updateTable(data);
+                }
+            });
+    }
     
     function addParams(pageNumber) {
         var paramsLink = '?',
@@ -103,6 +143,9 @@
                 }
             });
     }
+    
+   
+    
     
     function updateTable(data) {
         var tableWrapperTbody = document.querySelector('.table-wrapper tbody');
