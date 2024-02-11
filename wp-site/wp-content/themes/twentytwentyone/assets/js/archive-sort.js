@@ -42,14 +42,10 @@
     
         function sortTable(column, order) {
             var table = document.querySelector('table');
-            var columnIndex = Array.from(table.querySelectorAll('th[data-sort]')).indexOf(
-                document.querySelector(`th[data-sort="${column}"]`)
-            );
-        
             var rows = Array.from(table.querySelectorAll('tbody tr'))
                 .sort((a, b) => {
-                    var aValue = a.cells[columnIndex].innerText.replace(/[^\d.-]/g, '');
-                    var bValue = b.cells[columnIndex].innerText.replace(/[^\d.-]/g, '');
+                    var aValue = a.cells.namedItem(column).innerText.replace(/[^\d.-]/g, '');
+                    var bValue = b.cells.namedItem(column).innerText.replace(/[^\d.-]/g, '');
                     return Number(aValue) - Number(bValue);
                 });
             

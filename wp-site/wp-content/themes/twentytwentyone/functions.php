@@ -830,7 +830,7 @@ function add_table_row()
     $out .= '<td><span class="' . $status . '">' . $status . '</span></td>';
     $out .= '<td>' . $start_date . '</td>';
     $out .= '<td>' . $end_date . '</td>';
-    $out .= '<td class="price">';
+    $out .= '<td id="price" class="price">';
     $out .= '<span class="usd">' . ($total_usd ? '$' . $total_usd : '') . '</span>';
     $out .= '<span class="pln d-none">' . ($total_pln ? $total_pln . 'zł' : '') . '</span>';
     $out .= '</td>';
@@ -849,32 +849,55 @@ add_action( 'wp_enqueue_scripts', 'ajax_script' );
 function make_is_paid()
 {
     $ids = $_POST['ids'];
-//    $id = $_POST['id'];
 
     $connect = new PDO('mysql:host=localhost;dbname=wp_site', 'root', 'root', [PDO::ATTR_ERRMODE =>
     PDO::ERRMODE_EXCEPTION]);
     $sql  = 'UPDATE wp_postmeta SET meta_value = :paid WHERE post_id IN ('.implode(',',$ids).') AND meta_key = :status';
-//    $sql  = 'UPDATE wp_postmeta SET meta_value = :paid WHERE post_id IN (:id) AND meta_key = :status';
     $stmt = $connect->prepare($sql);
 
     try {
         $stmt->execute([
             'status' => 'status',
             'paid'   => 'paid',
-//        'id' => $id,
-//            'ids'    => array_map('intval', $ids), // "15,16"
-//        'ids'   => $ids, // "15,16"
         ]);
     }catch (\Exception $e){
-        echo (string)$e;
+        echo $e;
         die();
     }
     load_more_data();
-//    $stmt = $connect->query($sql);
-//    while($company = $stmt->fetch(PDO::FETCH_ASSOC)) {
 
 }
 
 add_action('wp_ajax_make_is_paid', 'make_is_paid');
 add_action('wp_ajax_nopriv_make_is_paid', 'make_is_paid');
 
+function status_sort()
+{
+    $status   = $_POST['status'];
+
+    $query_args = [
+        'post_type'  => 'delivery-companies',
+        'meta_key' => 'status',
+        'meta_value' => $status,
+        'order'          => 'ASC',
+        'posts_per_page' => -1,
+    ];
+
+    $query_args['posts_per_page'] = $status !== '' ? -1 : 5;
+
+    $query = new WP_Query($query_args);
+
+    if ($query->have_posts()):
+        while ($query->have_posts()) : $query->the_post();
+            echo add_table_row();
+        endwhile;
+        wp_reset_postdata();
+    else :
+        echo '<tr><td>No more posts found</td></tr>';
+    endif;
+
+    wp_die();
+}
+
+add_action('wp_ajax_status_sort', 'status_sort');
+add_action('wp_ajax_nopriv_status_sort', 'status_sort');

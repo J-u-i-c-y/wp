@@ -2,7 +2,14 @@
     
     var paginationActiveClassSelector = '.page-numbers.current';
     var isPaidButton = document.querySelector('.mark-paid-btn');
+    var sortedButtons = document.querySelectorAll('.sort-status__btn');
     var companiesCheckbox = document.querySelectorAll('.table-wrapper input[type=checkbox]');
+    
+    sortedButtons.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            getSortedStatus(btn.getAttribute('data-sort'));
+        })
+    })
     
     
     isPaidButton.addEventListener('click', function() {
@@ -31,7 +38,6 @@
             data: {
                 action: 'make_is_paid',
                 ids: ids,
-                // id: id,
                 page: getParams()
             },
         })
@@ -78,29 +84,16 @@
                 getCompanies();
             });
         })
-        //  paginationNotCurrentButtons.forEach(function(button) {
-        //     button.addEventListener('click', function() {
-        //
-        //         this.classList.add('current');
-        //         paginationCurrentButton.classList.remove('current');
-        //         // updateFilters();
-        //         addParams(this.textContent);
-        //         getCompanies();
-        //     });
-        // });
     }
     
     function paginationButtonsToggle(condition) {
-        // Предыдущие обработчики событий
         let previousEventHandlers = [];
         
-        // Функция, которая будет вешать обработчик события
         function addEventHandler(eventType, handler) {
             document.addEventListener(eventType, handler);
             previousEventHandlers.push({ eventType, handler });
         }
         
-        // Функция для удаления предыдущих обработчиков событий
         function removePreviousEventHandlers() {
             previousEventHandlers.forEach(({ eventType, handler }) => {
                 document.removeEventListener(eventType, handler);
@@ -108,7 +101,6 @@
             previousEventHandlers = [];
         }
         
-        // Определение условия и поведение в зависимости от него
         if (condition === true) {
             addEventHandler('click', handleClick);
             addEventHandler('keydown', handleKeyDown);
@@ -116,7 +108,6 @@
             removePreviousEventHandlers();
         }
         
-        // Обработчики событий
         function handleClick(event) {
             console.log('Клик!', event);
         }
@@ -132,7 +123,7 @@
             url: myAjax.ajaxurl,
             data: {
                 action: 'load_more_data',
-                page: getParams()
+                page: getParams(),
             },
         })
             .done(function(data) {
@@ -176,7 +167,22 @@
         return paramsData;
     }
     
-    // var currentPage = 1;
+    function getSortedStatus(status) {
+        $.ajax({
+            url: myAjax.ajaxurl,
+            type: 'POST',
+            data: {
+                action: 'status_sort',
+                status: status,
+            },
+            success: function(response) {
+                console.log(response);
+                if (response) {
+                    updateTable(response);
+                }
+            },
+        });
+    }
     
     // function loadPage(page) {
     //     // Очищаем таблицу перед загрузкой нового контента

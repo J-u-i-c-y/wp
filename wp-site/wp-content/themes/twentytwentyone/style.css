@@ -994,6 +994,13 @@ template {
     display: flex;
     justify-content: space-between;
     margin-bottom: 10px;
+    gap: 20px;
+}
+
+.sort-status {
+    display: flex;
+    gap: 10px;
+    align-items: center;
 }
 
 .mark-paid-btn {

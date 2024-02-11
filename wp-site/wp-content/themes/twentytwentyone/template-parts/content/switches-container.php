@@ -1,29 +1,9 @@
-<?php
-
-//$connect = new PDO('mysql:host=localhost;dbname=wp_site', 'root', 'root');
-//$sql  = "UPDATE wp_postmeta SET meta_value = :paid WHERE post_id IN (:ids)";
-//$stmt = $connect->prepare($sql);
-////$stmt->execute([
-////        'status' => 'status',
-////        'id' => '49'
-////]);
-//$stmt->execute([
-//    'paid' => 'paid',
-//    'ids'   => implode([15, 16])
-//]);
-
-//$stmt = $connect->query($sql);
-//while($company = $stmt->fetch(PDO::FETCH_ASSOC)) {
-//    var_dump($company);
-//}
-
-//$companies = $stmt->fetch(PDO::FETCH_ASSOC);
-//var_dump($companies);
-
-?>
-
-
 <div class="buttons-container">
+    <div class="sort-status">
+        <div class="sort-status__btn">All</div>
+        <div class="sort-status__btn" data-sort="unpaid">Unpaid</div>
+        <div class="sort-status__btn" data-sort="paid">Paid</div>
+    </div>
     <div class="mark-paid-btn">Mark as paid</div>
     <div class="switches-container">
         <input type="radio" id="switchUsd" name="switchPrice" value="USD" checked="checked"/>

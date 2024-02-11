@@ -6,7 +6,7 @@
         <th>Status</th>
         <th>Start Date</th>
         <th>End Date</th>
-        <th data-sort="total">Total</th>
+        <th data-sort="price">Total</th>
     </tr>
     </thead>
     <tbody>
