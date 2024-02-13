@@ -1,6 +1,6 @@
 <div class="buttons-container">
     <div class="sort-status">
-        <div class="sort-status__btn">All</div>
+        <div class="sort-status__btn active" data-sort="">All</div>
         <div class="sort-status__btn" data-sort="unpaid">Unpaid</div>
         <div class="sort-status__btn" data-sort="paid">Paid</div>
     </div>

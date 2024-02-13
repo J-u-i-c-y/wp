@@ -1003,6 +1003,17 @@ template {
     align-items: center;
 }
 
+.sort-status__btn {
+    color: var(--global--color-primary);
+    border-radius: 6px;
+    padding: 10px 20px;
+}
+
+.sort-status__btn.active {
+    color: #fff;
+    background-color: var(--global--color-primary);
+}
+
 .mark-paid-btn {
     background-color: var(--global--color-primary);
     color: #fff;

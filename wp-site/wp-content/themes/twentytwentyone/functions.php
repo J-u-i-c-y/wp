@@ -736,7 +736,7 @@ add_action('wp_ajax_nopriv_search_posts', 'search_posts');
 
 function load_more_data()
 {
-    $page             = $_POST['page'];
+    $page             = $_POST['params'];
     $search           = sanitize_text_field($_POST['search']);
     $start_date_range = sanitize_text_field($_POST['start_date_range']);
     $end_date_range   = sanitize_text_field($_POST['end_date_range']);
@@ -766,8 +766,10 @@ function load_more_data()
         'post_type'  => 'delivery-companies',
         's'          => $search,
         'meta_query' => $meta_query,
-        'order'          => 'ASC',
+        'order'      => 'ASC',
     ];
+
+    $query_args['posts_per_page'] = $search !== '' ? -1 : 5;
 
     $query = new WP_Query($query_args);
 
@@ -788,7 +790,7 @@ add_action('wp_ajax_nopriv_load_more_data', 'load_more_data');
 
 function update_pagination()
 {
-    $paged = get_query_var( 'paged' ) ? get_query_var( 'paged' ) : 1;
+    $paged = get_query_var('paged') ? get_query_var('paged') : 1;
 
     $query_args = [
         'paged'          => $paged,
@@ -822,7 +824,7 @@ function add_table_row()
     $title      = get_the_title();
     $link       = get_permalink();
 
-    $out  = '<tr>';
+    $out = '<tr>';
 
     $out .= '<td><input type="checkbox" id="' . get_the_ID() . '" value="' . get_the_ID() . '">';
     $out .= '<label for="' . get_the_ID() . '"></label>#' . get_the_ID() . '</td>';
@@ -839,33 +841,45 @@ function add_table_row()
     return $out;
 }
 
-function ajax_script() {
-    wp_enqueue_script( 'ajax_operation_script', get_template_directory_uri() . '/assets/js/jquery.js', array('jquery'), '1.0.0', true );
-    wp_localize_script( 'ajax_operation_script', 'myAjax', array( 'ajaxurl' => admin_url( 'admin-ajax.php', 'relataive' )));
-    wp_enqueue_script( 'ajax_operation_script' );
+function ajax_script()
+{
+    wp_enqueue_script(
+        'ajax_operation_script',
+        get_template_directory_uri() . '/assets/js/jquery.js',
+        ['jquery'],
+        '1.0.0',
+        true
+    );
+    wp_localize_script('ajax_operation_script', 'myAjax', ['ajaxurl' => admin_url('admin-ajax.php', 'relataive')]);
+    wp_enqueue_script('ajax_operation_script');
 }
-add_action( 'wp_enqueue_scripts', 'ajax_script' );
+
+add_action('wp_enqueue_scripts', 'ajax_script');
 
 function make_is_paid()
 {
     $ids = $_POST['ids'];
 
-    $connect = new PDO('mysql:host=localhost;dbname=wp_site', 'root', 'root', [PDO::ATTR_ERRMODE =>
-    PDO::ERRMODE_EXCEPTION]);
-    $sql  = 'UPDATE wp_postmeta SET meta_value = :paid WHERE post_id IN ('.implode(',',$ids).') AND meta_key = :status';
-    $stmt = $connect->prepare($sql);
+    $connect = new PDO('mysql:host=localhost;dbname=wp_site', 'root', 'root', [
+        PDO::ATTR_ERRMODE =>
+            PDO::ERRMODE_EXCEPTION
+    ]);
+    $sql     = 'UPDATE wp_postmeta SET meta_value = :paid WHERE post_id IN (' . implode(
+            ',',
+            $ids
+        ) . ') AND meta_key = :status';
+    $stmt    = $connect->prepare($sql);
 
     try {
         $stmt->execute([
             'status' => 'status',
             'paid'   => 'paid',
         ]);
-    }catch (\Exception $e){
+    } catch (\Exception $e) {
         echo $e;
         die();
     }
     load_more_data();
-
 }
 
 add_action('wp_ajax_make_is_paid', 'make_is_paid');
@@ -873,17 +887,17 @@ add_action('wp_ajax_nopriv_make_is_paid', 'make_is_paid');
 
 function status_sort()
 {
-    $status   = $_POST['status'];
+    $status = $_POST['status'];
 
     $query_args = [
-        'post_type'  => 'delivery-companies',
-        'meta_key' => 'status',
-        'meta_value' => $status,
+        'post_type'      => 'delivery-companies',
+        'meta_key'       => 'status',
+        'meta_value'     => $status,
         'order'          => 'ASC',
         'posts_per_page' => -1,
     ];
 
-    $query_args['posts_per_page'] = $status !== '' ? -1 : 5;
+    $query_args['posts_per_page'] = ($status === '' || $status === null) ? 5 : -1;
 
     $query = new WP_Query($query_args);
 
