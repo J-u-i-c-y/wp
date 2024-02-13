@@ -125,6 +125,7 @@
         }).done(function(data) {
             if (data.length > 0) {
                 updateTable(data);
+                priceSwitch();
             }
         });
     }
@@ -153,7 +154,6 @@
                     updateTable(response);
                     addParams('status', status);
                     hidePagination(status);
-                    tableSort();
                     sortedButtons.forEach(function(btn) {
                         btn.classList.remove(activeClass);
                         btn.getAttribute('data-sort') === status ? btn.classList.add(activeClass) : '';
@@ -163,25 +163,27 @@
         });
     }
     
-    function tableSort() {
+    function priceSwitch() {
         var switchUsd = document.getElementById('switchUsd');
         var switchPln = document.getElementById('switchPln');
-        
+
         [switchUsd, switchPln].forEach(element => {
             element.addEventListener('click', () => {
                 var pricesUsd = document.querySelectorAll('.price .usd');
                 var pricesPln = document.querySelectorAll('.price .pln');
-                
+
                 pricesUsd.forEach(e => {
                     e.classList.toggle('d-none');
                 });
-                
+
                 pricesPln.forEach(e => {
                     e.classList.toggle('d-none');
                 });
             });
         });
-        
+    }
+
+    function tableSort() {
         var searchParams = getSearchParams();
         var sortColumn = searchParams.get('sort');
         var sortOrder = searchParams.get('order') || 'asc';
